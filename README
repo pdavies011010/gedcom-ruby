@@ -1,0 +1,203 @@
+#PCD -- Using "AD" as the epoch isn't allowed... is this correct behavior? If BC isn't
+# supplied, AD is assumed, but it seems to me it should at least be allowed grammar
+
+GEDCOM-Ruby
+-----------
+
+This is a module for the Ruby language that defines a callback GEDCOM parser.
+It does not do any validation of a GEDCOM file, but, using application-defined
+callback hooks, can traverse any well-formed GEDCOM.
+
+The module also includes a sophisticated date parser that can parse any
+standard GEDCOM-formatted date (see the GEDCOM spec for details on the
+format).
+
+
+Installation
+------------
+
+To install, you will need a C compiler (gcc is preferred) and the Ruby
+interpreter.
+
+  ruby extconf.rb
+  make
+  make install
+
+You can try the samples by typing:
+
+  ruby samples/count.rb samples/royal.ged
+  ruby samples/birthdays.rb samples/royal.ged
+
+
+
+Usage
+-----
+
+To use this module in your own programs, you can either inherit from the GEDCOM::Parser class
+(in which case the initialize method should call 'super' before doing anything else), or you
+can instantiate the GEDCOM::Parser class directly.
+
+Either way, the setPreHandler and setPostHandler methods should then be used to register
+callbacks for specified contexts.  A "context" is simply an array of strings, where each
+element of the array specifies a GEDCOM row type.  For example:
+
+  [ "INDI" ] -> this context defines a row on which an individual is introduced.
+  [ "INDI", "BIRT", "DATE" ] -> this context defines the birthdate of an individual.
+
+Callbacks are registered as follows:
+
+  setPreHandler( context, function [, parm] )
+  setPostHandler( context, function [, parm] )
+
+The 'context' is (as was described above) an array of strings, and the function is the Method
+object to invoke.  The optional 'parm' method is a parameter that should be passed to the callback
+when it is invoked.  This can be used to allow the same callback to handle multiple different
+contexts.
+
+The 'pre' handler is called as soon as the context is recognized, before anything else is done.
+The 'post' handler is called when the given context is about to expire.  For example, if the context
+were [ "INDI" ], the pre handler would be called as soon as a row of type 'INDI' at level 0 was
+encountered, while the post handler would be called as soon as another row of level 0 was encountered,
+before that row's pre handler was invoked.  This allows you do perform initialization and commit
+operations.
+
+Each callback should take three parameters:
+
+  def callbackFunction( data, cookie, parm )
+    ...
+  end
+
+The 'data' parameter is the text for the row's data (ie, the text that follows the row's type).
+The 'cookie' parameter is the value that was passed to the parser's initialize method (if any),
+and 'parm' is the parameter that was specified when the callback was registered.
+
+To parse a file, simply call the parser's 'parse' method, passing the name of the file to
+parse.
+
+
+API Reference
+-------------
+
+  module GEDCOM
+
+    class Parser
+
+      def initialize( cookie = nil )
+        :: Creates the parser, with the given 'cookie' (application defined value) which will
+           be passed to every callback.
+
+      def setPreHandler( context, func, parm = nil )
+        :: Registers the given function (Method object) to be called as soon as the given
+           context is recognized.  The given 'parm' value will be passed to the callback.
+
+      def setPostHandler( context, func, parm = nil )
+        :: Registers the given function (Method object) to be called as soon as the given
+           context expires.  The given 'parm' value will be passed to the callback.
+      
+      def parse( file )
+        :: Opens and parses the file with the given name, invoking callbacks as the registered
+           contexts are recognized.
+
+
+    class Date
+
+      def initialize( date_str, calendar=DateType::DEFAULT )
+      def initialize( date_str, calendar=DateType::DEFAULT ) { |err_msg| ... }
+        :: Creates a new GEDCOM Date object from the given string.  In the first form, if
+           the string does not define a valid date, a GEDCOM::DateFormatException is raised.
+           In the second form, an exception is not raised, but the given block is called
+           when there is an error.  Also, in the second form, a Date object is still returned,
+           but it will contain nothing except the string that was passed to it.
+
+      def Date.safe_new( date_str )
+        :: Creates a new GEDCOM Date object, but never throws a DateFormatException.
+
+      def format
+        :: Returns one of the following constants, indicating what the format of the date is:
+             NONE, ABOUT, CALCULATED, ESTIMATED, BEFORE, AFTER, BETWEEN, FROM, TO, FROMTO,
+             INTERPRETED, CHILD, CLEARED, COMPLETED, INFANT, PRE1970, QUALIFIED, STILLBORN,
+             SUBMITTED, UNCLEARED, BIC, DNS, DNSCAN, DEAD
+
+      def first
+        :: Returns a GEDCOM::DatePart object that defines the first part of the date.
+
+      def last
+        :: Returns a GEDCOM::DatePart object that defines the last part of the date.  This
+           will only be valid for a date format of BETWEEN or FROMTO (indicating a range
+           of dates).
+
+      def to_s
+        :: Returns the date formatted as a string.
+
+      def is_date?
+        :: Returns true if the Date object defines a date, but returns false if it
+           defines some non-date value (ie, there was an error parsing the date, or if the
+           date format is one of CHILD, CLEARED, COMPLETED, INFANT, PRE1970, QUALIFIED,
+           STILLBORN, SUBMITTED, UNCLEARED, BIC, DNS, DNSCAN, or DEAD).
+
+      def is_range?
+        :: Returns true if the Date object defines a date range (ie, format is either
+           BETWEEN or FROMTO).  If this is true, then Date.last will return the end of
+           the range.
+
+      def <=>( date )
+        :: Compares this date with the parameter, and returns -1, 0, or 1.
+
+
+    class DatePart
+
+      def calendar
+        :: Returns the calendar that was used to represent the given date.  Valid values
+           are DateType::GREGORIAN, DateType::JULIAN, DateType::HEBREW, DateType::FRENCH,
+           DateType::FUTURE, DateType::UNKNOWN, and DateType::DEFAULT.
+
+      def compliance
+        :: Returns the compliance of the date (ie, whether it is a valid date or not).
+           Valid values are DatePart::NONE (meaning it is a valid date), DatePart::PHRASE
+           (meaning the date contains a phrase, not a date) and DatePart::NONSTANDARD
+           (meaning there was an error parsing the date).
+
+      def phrase
+        :: If the compliance is DatePart::PHRASE, this will return the phrase value.
+           Otherwise, this will raise a DateFormatException.
+
+      def has_day?
+        :: Returns true if the date contains a day value.
+
+      def has_month?
+        :: Returns true if the date contains a month value.
+
+      def has_year?
+        :: Returns true if the date contains a year value.
+
+      def has_year_span?
+        :: Returns true if the date contains a span of years (valid only for
+           DateType::GREGORIAN calendars).  This means the date was formatted
+           like '25 Jul 1974-1980'.
+
+      def day
+        :: Returns the day portion of the date, if it has a day.  If it does not
+           have a day, a DateFormatException is raised.
+
+      def month
+        :: Returns the month portion of the date, if it has a month.  If it does not
+           have a month, a DateFormatException is raised.  (The month value will
+           be an integer, with 1 being the first month of the year.)
+
+      def year
+        :: Returns the year portion of the date, if it has a year.  If it does not
+           have a year, a DateFormatException is raised.
+
+      def to_year
+        :: Returns the second year portion of the date, if it has a year span.  If
+           it does not contain a year span, a DateFormatException is raised.
+      
+      def epoch
+        :: Returns either "BC" or "AD", as appropriate.
+
+      def to_s
+        :: Converts the DatePart object to a string.
+
+      def <=>( date_part )
+        :: Compares this date_part with the parameter, and returns -1, 0, or 1.
+
