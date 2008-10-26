@@ -15,67 +15,67 @@ describe DatePart do
   end
   
   it "makes date type and flags available" do
-    return false if !(@date_range_from.date1.flags && ((@date_range_from.date1.flags & GEDCOM::DatePart::NODAY) == 0))
-    return false if !(@date_range_from.date2.flags && ((@date_range_from.date2.flags & GEDCOM::DatePart::NODAY) == 0))
-    return false if !(@date_range_from.date1.type && ((@date_range_from.date1.type & GEDCOM::DateType::DEFAULT) == 0))
-    return false if !(@date_range_from.date2.type && ((@date_range_from.date2.type & GEDCOM::DateType::DEFAULT) == 0))
+    return false if !(@date_range_from.first.compliance && ((@date_range_from.first.compliance & GEDCOM::DatePart::NODAY) == 0))
+    return false if !(@date_range_from.last.compliance && ((@date_range_from.last.compliance & GEDCOM::DatePart::NODAY) == 0))
+    return false if !(@date_range_from.first.calendar && ((@date_range_from.first.calendar & GEDCOM::DateType::DEFAULT) == 0))
+    return false if !(@date_range_from.last.calendar && ((@date_range_from.last.calendar & GEDCOM::DateType::DEFAULT) == 0))
   
     true
   end
 
   it "finds days" do
-    return false if !(@date.date1.has_day? && (@date.date1.day == 1))
+    return false if !(@date.first.has_day? && (@date.first.day == 1))
     
-    return false if !(@date_range_between.date1.has_day? && (@date_range_between.date1.day == 1))
-    return false if !(@date_range_between.date2.has_day? && (@date_range_between.date2.day == 1))
+    return false if !(@date_range_between.first.has_day? && (@date_range_between.first.day == 1))
+    return false if !(@date_range_between.last.has_day? && (@date_range_between.last.day == 1))
     
-    return false if !(@date_bc.date1.has_day? && (@date_bc.date1.day == 25))
+    return false if !(@date_bc.first.has_day? && (@date_bc.first.day == 25))
     
     true
   end
   
   it "finds months" do
-    return false if !(@date.date1.has_month? && (@date.date1.month == 4))
+    return false if !(@date.first.has_month? && (@date.first.month == 4))
     
-    return false if !(@date_range_between.date1.has_month? && (@date_range_between.date1.month == 1))
-    return false if !(@date_range_between.date2.has_month? && (@date_range_between.date2.month == 4))
+    return false if !(@date_range_between.first.has_month? && (@date_range_between.first.month == 1))
+    return false if !(@date_range_between.last.has_month? && (@date_range_between.last.month == 4))
     
-    return false if !(@date_bc.date1.has_month? && (@date_bc.date1.month == 1))
+    return false if !(@date_bc.first.has_month? && (@date_bc.first.month == 1))
     
     true
   end
   
   it "finds years" do
-    return false if !(@date.date1.has_year? && (@date.date1.year == 2008))
+    return false if !(@date.first.has_year? && (@date.first.year == 2008))
     
-    return false if !(@date_range_between.date1.has_year? && (@date_range_between.date1.year == 1970))
-    return false if !(@date_range_between.date2.has_year? && (@date_range_between.date2.year == 2008))
+    return false if !(@date_range_between.first.has_year? && (@date_range_between.first.year == 1970))
+    return false if !(@date_range_between.last.has_year? && (@date_range_between.last.year == 2008))
     
-    return false if !(@date_bc.date1.has_year? && (@date_bc.date1.year == 1))
+    return false if !(@date_bc.first.has_year? && (@date_bc.first.year == 1))
     
     true
   end
   
   it "finds the epoch" do
-    return false if !(@date.date1.epoch == "AD")
+    return false if !(@date.first.epoch == "AD")
 
-    return false if !(@date_bc.date1.epoch == "BC")
+    return false if !(@date_bc.first.epoch == "BC")
     
     true
   end  
 
   it "finds year span" do
-    return false if !(@date_year_span.date1.has_year_span?)
+    return false if !(@date_year_span.first.has_year_span?)
     
-    return false if @date.date1.has_year_span?
+    return false if @date.first.has_year_span?
     
     true
   end
   
   it "converts to string" do
     return false if @date_range_from.to_s != "from 0 Apr 2007 to 0 Jun 2008"
-    return false if @date_range_from.date1.to_s != "0 Apr 2007"
-    return false if @date_range_from.date2.to_s != "0 Jun 2008"
+    return false if @date_range_from.first.to_s != "0 Apr 2007"
+    return false if @date_range_from.last.to_s != "0 Jun 2008"
     
     true
   end
