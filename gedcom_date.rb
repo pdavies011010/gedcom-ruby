@@ -19,8 +19,9 @@
 #
 require 'gedcom_date_parser'
 module GEDCOM
-    module DatePart
+    class DatePart < GEDCOM_DATE_PARSER::GEDDate
       
+      # Flags
       NONE = GEDCOM_DATE_PARSER::GFNONE
       PHRASE = GEDCOM_DATE_PARSER::GFPHRASE
       NONSTANDARD = GEDCOM_DATE_PARSER::GFNONSTANDARD
@@ -29,6 +30,10 @@ module GEDCOM
       NOMONTH = GEDCOM_DATE_PARSER::GFNOMONTH
       NOYEAR = GEDCOM_DATE_PARSER::GFNOYEAR
       YEARSPAN = GEDCOM_DATE_PARSER::GFYEARSPAN
+      
+      def initialize
+        super( GEDCOM_DATE_PARSER::GCTGREGORIAN, NONE, nil )
+      end
       
       def calendar
         @type
@@ -95,6 +100,7 @@ module GEDCOM
     end
     
     class Date < GEDCOM_DATE_PARSER::GEDDateValue
+      # Calendar types
       NONE = GEDCOM_DATE_PARSER::GCNONE
       ABOUT = GEDCOM_DATE_PARSER::GCABOUT
       CALCULATED = GEDCOM_DATE_PARSER::GCCALCULATED
@@ -122,10 +128,10 @@ module GEDCOM
 
       def initialize ( date_str, calendar=DateType::DEFAULT )
         begin
-          super(GEDCOM_DATE_PARSER::DateParser::GEDFNONE, nil, nil)
+          @date1 = DatePart.new
+          @date2 = DatePart.new
+          super(GEDCOM_DATE_PARSER::DateParser::GEDFNONE, @date1, @date2)
           GEDCOM_DATE_PARSER::DateParser.parse_gedcom_date( date_str, self, calendar )
-          @date1.extend(DatePart)  # Mixin DatePart stuff
-          @date2.extend(DatePart)  # Mixin DatePart stuff
        rescue GEDCOM_DATE_PARSER::DateParseException
           err_msg = "format error at '"
           if (@date1 && (@date1.flags & DatePart::NONSTANDARD))

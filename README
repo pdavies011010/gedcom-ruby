@@ -16,12 +16,7 @@ format).
 Installation
 ------------
 
-To install, you will need a C compiler (gcc is preferred) and the Ruby
-interpreter.
-
-  ruby extconf.rb
-  make
-  make install
+To install, you will need a Ruby interpreter. 
 
 You can try the samples by typing:
 
@@ -29,6 +24,19 @@ You can try the samples by typing:
   ruby samples/birthdays.rb samples/royal.ged
 
 
+Alternately, a C extension version of the date parser can be built. In order to
+build you will need a C compiler (gcc is preferred).
+
+  cd lib/
+  ruby extconf.rb
+  make
+  make install
+
+And then uncomment the line in gedcom.rb 
+   #require '_gedcom'
+
+and comment out
+   require 'gedcom_date'
 
 Usage
 -----

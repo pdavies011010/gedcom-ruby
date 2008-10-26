@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # -------------------------------------------------------------------------
 
-#require "_gedcom"
+#require '_gedcom'
 require 'gedcom_date'
 
 module GEDCOM
@@ -82,7 +82,7 @@ module GEDCOM
     end
   end
 
-  module DatePart
+  class DatePart
     def <=>( dp )
       return -1 if has_year? and !dp.has_year?
       return 1 if !has_year? and dp.has_year?

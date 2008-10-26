@@ -98,7 +98,7 @@ class BirthdayExtractor < GEDCOM::Parser
 
   def showPerson( ind )
     age = Time.now.year - ind.date.first.year
-    printf( "\n%40-s %20s %4d years old", ind.name, ind.date.to_s, age )
+    printf( "\n%40s %20s %4d years old", ind.name, ind.date.to_s, age )
   end
 end
 

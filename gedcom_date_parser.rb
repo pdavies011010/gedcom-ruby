@@ -528,6 +528,8 @@ module GEDCOM_DATE_PARSER
           else
             months = Default_Months
         end
+        
+        return buffer if not (date.data)
 
         if ( date.data.flags && (( date.data.flags & GFNODAY ) == 0) )
           buffer += date.data.day.to_s
@@ -743,8 +745,8 @@ module GEDCOM_DATE_PARSER
         parser = GEDParserState.new( "", 0, 0, 0 )
         parser.buffer = dateString
 
-        # Clear out dates, in case they've been previously used
-        date.date1 = GEDDate.new( type, GFNONE, nil )
+        # New date 1 if it's nil
+        date.date1 = GEDDate.new( type, GFNONE, nil ) if not date.date1
         datePart = date.date1
 
         state = ST_DV_START
@@ -771,7 +773,8 @@ module GEDCOM_DATE_PARSER
                   put_token( parser, general, specific )
                   begin
                     if (datesRead != 0)
-                      date.date2 = GEDDate.new( type, GFNONE, nil )
+                      # New date 2 if it's nil
+                      date.date2 = GEDDate.new( type, GFNONE, nil ) if not date.date2
                       datePart = date.date2
                     end
                     parse_date_part( parser, datePart, type )
@@ -940,7 +943,7 @@ module GEDCOM_DATE_PARSER
           when GCBETWEEN then buffer += " and "
           when GCFROMTO then  buffer += " to "
         end
-
+        
         buffer += get_date_text( date.date2 ) if (date.date2)
         buffer
       end
