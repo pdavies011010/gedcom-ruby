@@ -2,7 +2,7 @@
 # To change this template, choose Tools | Templates
 # and open the template in the editor.
  
-require 'gedcom_date'
+require 'gedcom'
 include GEDCOM
 
 describe Date do
