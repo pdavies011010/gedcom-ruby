@@ -31,8 +31,8 @@ module GEDCOM
       NOYEAR = GEDCOM_DATE_PARSER::GFNOYEAR
       YEARSPAN = GEDCOM_DATE_PARSER::GFYEARSPAN
       
-      def initialize
-        super( GEDCOM_DATE_PARSER::GCTGREGORIAN, NONE, nil )
+      def initialize(type=GEDCOM_DATE_PARSER::GCTGREGORIAN, flags=NONE, data=nil)
+        super( type, flags, data )
       end
       
       def calendar
