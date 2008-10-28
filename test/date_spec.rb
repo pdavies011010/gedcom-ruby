@@ -13,8 +13,8 @@ describe Date do
   ## ! Could definitely stand to beef this test up. About, Estimated, etc. 
   ##   Lot's of flags to test.
   it "makes flags available" do
-    (@date_range_from.format & GEDCOM::Date::FROMTO).should != 0
-    (@date_range_between.format & GEDCOM::Date::BETWEEN).should != 0
+    (@date_range_from.format & GEDCOM::Date::FROMTO).should_not == 0
+    (@date_range_between.format & GEDCOM::Date::BETWEEN).should_not == 0
   end
   
   it "does comparison" do

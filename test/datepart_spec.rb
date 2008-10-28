@@ -11,10 +11,10 @@ describe DatePart do
   end
   
   it "makes date type and flags available" do
-    (@date_range_from.first.compliance & GEDCOM::DatePart::NODAY).should != 0
-    (@date_range_from.last.compliance & GEDCOM::DatePart::NODAY).should != 0
-    (@date_range_from.first.calendar & GEDCOM::DateType::DEFAULT).should != 0
-    (@date_range_from.last.calendar & GEDCOM::DateType::DEFAULT).should != 0
+    (@date_range_from.first.compliance & GEDCOM::DatePart::NODAY).should_not == 0
+    (@date_range_from.last.compliance & GEDCOM::DatePart::NODAY).should_not == 0
+    (@date_range_from.first.calendar & GEDCOM::DateType::DEFAULT).should_not == 0
+    (@date_range_from.last.calendar & GEDCOM::DateType::DEFAULT).should_not == 0
   end
 
   it "finds days" do
