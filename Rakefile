@@ -1,6 +1,7 @@
 # $Id$
 require 'rubygems'
 require 'rake'
+require 'spec/rake/spectask'
 require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
@@ -63,7 +64,8 @@ namespace :test do
   
   desc 'Heckle the tests'
   task :heckle do
-    system("heckle HL7::Message")
+    system("spec tests/* --heckle GEDCOM::DatePart")
+    system("spec tests/* --heckle GEDCOM::Date")
   end
 
   desc 'Show which test files fail when run alone.'
