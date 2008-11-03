@@ -46,13 +46,13 @@ end
 # Gem Task
 Rake::GemPackageTask.new(spec) do |pkg| 
   pkg.need_tar = true 
-  pkg.package_dir_path = "pkg/"
 end
 
 # RSpec Test Task
 desc 'Run all RSpec tests'
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['tests/*_spec.rb']
+  t.libs << $:
 end
 
 namespace :spec do
@@ -60,6 +60,7 @@ namespace :spec do
   Spec::Rake::SpecTask.new('spec_with_rcov') do |t|
     t.warning = true
     t.spec_files = FileList['tests/*_spec.rb']
+    t.libs << $:
     t.rcov = true
   end
   
