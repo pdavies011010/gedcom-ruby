@@ -22,6 +22,9 @@ require 'gedcom_date'
 
 module GEDCOM
 
+  # Possibly a better way to do this?
+  VERSION = "0.0.1"
+	
   class Parser
     def defaultHandler( data, cookie, parm )
     end
