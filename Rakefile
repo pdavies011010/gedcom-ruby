@@ -27,12 +27,11 @@ spec = Gem::Specification.new do |s|
   s.version = GEDCOM::VERSION
   s.author = "Phillip Davies"
   s.email = "fcdradio@gmail.com"
-  # Need to get the RubyForge project set up  !!! PCD
-  s.homepage = "http://rubyforge.org/ruby-hl7"
+  s.homepage = "http://rubyforge.org/gedcom-ruby"
   s.platform = Gem::Platform::RUBY
   s.summary = "Ruby GEDCOM Parser Library"
   s.rubyforge_project = short_name
-  s.description = "A simple library to enable the parsing of GEDCOM data files" 
+  s.description = "A simple library to enable easy, callback-based parsing of GEDCOM data files" 
   s.files = FileList["{lib,ext,samples,tests}/**/*"].to_a
   s.require_path = "lib"
   s.autorequire = short_name
@@ -51,24 +50,35 @@ end
 # RSpec Test Task
 desc 'Run all RSpec tests'
 Spec::Rake::SpecTask.new do |t|
+  t.warning = true
   t.spec_files = FileList['tests/*_spec.rb']
   t.libs << $:
 end
 
 namespace :spec do
   desc 'Run all RSpec tests with RCov to measure coverage'
-  Spec::Rake::SpecTask.new('spec_with_rcov') do |t|
-    t.warning = true
+  Spec::Rake::SpecTask.new('with_rcov') do |t|
     t.spec_files = FileList['tests/*_spec.rb']
     t.libs << $:
     t.rcov = true
   end
   
-  desc 'Heckle the tests'
-  task :heckle do
-    system("spec tests/*_spec.rb --heckle GEDCOM::DatePart")
-    system("spec tests/*_spec.rb --heckle GEDCOM::Date")
+  desc 'Heckle the Date tests'
+  Spec::Rake::SpecTask.new('heckle_dates') do |t|
+    t.warning = true
+    t.spec_files = FileList['tests/date_spec.rb']
+    t.libs << $:
+    t.spec_opts << " --heckle GEDCOM::Date"
   end
+  
+  desc 'Heckle the DatePart test'
+  Spec::Rake::SpecTask.new('heckle_dateparts') do |t|
+    t.warning = true
+    t.spec_files = FileList['tests/datepart_spec.rb']
+    t.libs << $:
+    t.spec_opts << " --heckle GEDCOM::DatePart"
+  end
+  
 end
  
 
@@ -97,6 +107,7 @@ task :release => [:clean, :package] do |t|
   puts "Logging in"
   rf.login
 
+  # Put changelog notes in a NOTES file
   changes = open("NOTES").readlines.join("") if File.exists?("NOTES")
   c = rf.userconfig
   c["release_notes"] = spec.description if spec.description
