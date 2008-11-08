@@ -756,15 +756,14 @@ module GEDCOM_DATE_PARSER
         while ( ( state != ST_DV_END ) && ( state != ST_DV_ERROR ) )
           savePos = parser.pos
           general, specific = get_token( parser )
-          raise DateParseException, "error parsing date" if (general == TKERROR)
-          transitionFound = 0
+          transitionFound = false
 
           DateValueStateTable.each do |dateValueState|
             break if dateValueState.state < 1
             
             if( ( dateValueState.state == state ) && ( dateValueState.input == general ) )
             
-              transitionFound = 1
+              transitionFound = true
               state = dateValueState.nextState
 
               case ( dateValueState.action ) 
@@ -900,7 +899,6 @@ module GEDCOM_DATE_PARSER
           parser.pos = savePos
           datePart.flags = GFNONSTANDARD
           datePart.data = parser.buffer.slice( parser.pos, parser.buffer.length )
-          raise DateParseException, "error parsing date, general"
         end
       end
       

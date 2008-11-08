@@ -8,13 +8,17 @@ describe DatePart do
     @date_range_between = GEDCOM::Date.new("BETWEEN 1 JANUARY 1970 AND 1 APRIL 2008")
     @date_bc = GEDCOM::Date.new("25 JANUARY 1 BC")
     @date_year_span = GEDCOM::Date.new("1 APRIL 2007/08")
+    @nonstandard = GEDCOM::Date.safe_new("FIRST DAY OF 2008")
+    @phrase = GEDCOM::Date.safe_new("(independance day)")
   end
   
   it "makes date type and flags available" do
-    (@date_range_from.first.compliance & GEDCOM::DatePart::NODAY).should_not == 0
-    (@date_range_from.last.compliance & GEDCOM::DatePart::NODAY).should_not == 0
-    (@date_range_from.first.calendar & GEDCOM::DateType::DEFAULT).should_not == 0
-    (@date_range_from.last.calendar & GEDCOM::DateType::DEFAULT).should_not == 0
+    (@date.first.compliance | GEDCOM::DatePart::NONE).should == 0
+    (@nonstandard.first.compliance & GEDCOM::DatePart::NONSTANDARD).should_not == 0
+    (@phrase.first.compliance & GEDCOM::DatePart::PHRASE).should_not == 0
+    
+    (@date_range_from.first.calendar | GEDCOM::DateType::DEFAULT).should == 0
+    (@date_range_from.last.calendar | GEDCOM::DateType::DEFAULT).should == 0
   end
 
   it "finds days" do

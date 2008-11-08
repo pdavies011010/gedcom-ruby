@@ -50,7 +50,7 @@ end
 # RSpec Test Task
 desc 'Run all RSpec tests'
 Spec::Rake::SpecTask.new do |t|
-  t.warning = true
+  t.warning = false
   t.spec_files = FileList['tests/*_spec.rb']
   t.libs << $:
 end
