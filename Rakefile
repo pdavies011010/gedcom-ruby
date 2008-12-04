@@ -14,7 +14,6 @@ require 'gedcom'
 full_name = "GEDCOM-Ruby"
 short_name = full_name.downcase
 
-#
 # Many of these tasks came from the ruby-hl7 project rakefile
 #
 
