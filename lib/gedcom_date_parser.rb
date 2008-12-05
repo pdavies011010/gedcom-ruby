@@ -354,9 +354,11 @@ module GEDCOM_DATE_PARSER
   DateStateTable << GEDStateEntry.new( ST_DT_NUMBER,       TKMONTH,         ST_DT_MONTH,          1 ) # 1: if MONTH, then error, else set number to be day, set month, set MONTH 
   DateStateTable << GEDStateEntry.new( ST_DT_NUMBER,       TKSLASH,         ST_DT_SLASH,          2 ) # 2: if SLASH, then error, else set SLASH, set number to be year 
   DateStateTable << GEDStateEntry.new( ST_DT_NUMBER,       TKBC,            ST_DT_BC,             3 ) # 3: if not SLASH set number to be year, set bc 
-  DateStateTable << GEDStateEntry.new( ST_DT_NUMBER,       TKEOF,           ST_DT_END,            4 ) # 4: if not SLASH set number to be year, terminate 
+  DateStateTable << GEDStateEntry.new( ST_DT_NUMBER,       TKEOF,           ST_DT_END,            4 ) # 4: if not SLASH set number to be year, terminate
+  DateStateTable << GEDStateEntry.new( ST_DT_NUMBER,       TKTO,            ST_DT_END,            4 ) # 4: if TO set number to be year, terminate
   DateStateTable << GEDStateEntry.new( ST_DT_MONTH,        TKNUMBER,        ST_DT_NUMBER,         5 ) # 5: if NUMBER, set number to be day.  set number to be year, store number, set NUMBER 
   DateStateTable << GEDStateEntry.new( ST_DT_MONTH,        TKEOF,           ST_DT_END,            6 ) # 6: terminate
+  DateStateTable << GEDStateEntry.new( ST_DT_MONTH,        TKTO,            ST_DT_END,            6 ) # 6: terminate
   DateStateTable << GEDStateEntry.new( ST_DT_SLASH,        TKNUMBER,        ST_DT_NUMBER,         7 ) # 7: set number to be year2 
   DateStateTable << GEDStateEntry.new( ST_DT_BC,           TKEOF,           ST_DT_END,            6 ) # 6: terminate 
   DateStateTable << GEDStateEntry.new( 0, 0, 0, 0 )
@@ -602,6 +604,7 @@ module GEDCOM_DATE_PARSER
             when TKBC
             when TKEOF
             when TKERROR
+            when TKTO
             else
               put_token( parser, general, specific )
               general = TKEOF
