@@ -822,7 +822,7 @@ module GEDCOM_DATE_PARSER
 
                 # 5: get remaining buffer as phrase
                 # 7: if 'interpreted', get remaining buffer as phrase            
-                when 5 || 7
+                when 5, 7
                   # This is kind of a sucky way to handle this, but the shared functionality
                   # between action 5 and 7 doesn't seem like enough to warrant breaking out 
                   # into it's own method. 

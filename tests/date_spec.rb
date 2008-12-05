@@ -40,7 +40,7 @@ describe Date do
   # code, therefore this test is failing (in C)
   it "converts to string" do
     @date.to_s.should == "1 Apr 2008"
-    @date_range_from.to_s.should == "from 0 Apr 2007 to 0 Jun 2008"
+    @date_range_from.to_s.should == "from Apr 2007 to Jun 2008"
     @date_range_between.to_s.should == "bet 1 Jan 1970 and 1 Apr 2008"
     @date_bc.to_s.should == "25 Jan 1 BC"
     @date_year_span.to_s.should == "1 Apr 2007-8"

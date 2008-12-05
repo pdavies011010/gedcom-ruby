@@ -78,8 +78,8 @@ describe DatePart do
   it "converts to string" do
     @date.first.to_s.should == "1 Apr 2008"
     
-    @date_range_from.first.to_s.should == "0 Apr 2007"
-    @date_range_from.last.to_s.should == "0 Jun 2008"
+    @date_range_from.first.to_s.should == "Apr 2007"
+    @date_range_from.last.to_s.should == "Jun 2008"
     
     @date_range_between.first.to_s.should == "1 Jan 1970"
     @date_range_between.last.to_s.should == "1 Apr 2008"
