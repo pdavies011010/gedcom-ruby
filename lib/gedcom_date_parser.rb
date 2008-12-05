@@ -552,8 +552,7 @@ module GEDCOM_DATE_PARSER
         buffer += " BC" if ( (date.type == GCTGREGORIAN) && (date.data.adbc != GEDADBCAD) )
         buffer
       end
-
-                            
+                           
       def self.validate_month_for_type( month, calType )
         # Make sure this is a valid month for this calendar type (class method)
         # Inputs:  parser    -  parser state
@@ -685,7 +684,7 @@ module GEDCOM_DATE_PARSER
                 # 3: if not SLASH set number to be year, set bc
                 # 4: if not SLASH set number to be year, terminate
                 # 6: terminate
-                when 3 || 4 || 6
+                when 3, 4, 6
                   if (dateState.action == 3)
                     if( type != GCTGREGORIAN )
                       state = ST_DT_ERROR
@@ -701,6 +700,7 @@ module GEDCOM_DATE_PARSER
                     end
                   end
 
+                  
                   datePart.data.flags |= GFNODAY if( datePart.data.day < 1 )
 
                   datePart.data.flags |= GFNOMONTH if( datePart.data.month < 1 )
@@ -756,14 +756,15 @@ module GEDCOM_DATE_PARSER
         while ( ( state != ST_DV_END ) && ( state != ST_DV_ERROR ) )
           savePos = parser.pos
           general, specific = get_token( parser )
-          transitionFound = false
+          raise DateParseException, "error parsing date" if (general == TKERROR)
+          transitionFound = 0
 
           DateValueStateTable.each do |dateValueState|
             break if dateValueState.state < 1
             
             if( ( dateValueState.state == state ) && ( dateValueState.input == general ) )
             
-              transitionFound = true
+              transitionFound = 1
               state = dateValueState.nextState
 
               case ( dateValueState.action ) 
@@ -899,6 +900,7 @@ module GEDCOM_DATE_PARSER
           parser.pos = savePos
           datePart.flags = GFNONSTANDARD
           datePart.data = parser.buffer.slice( parser.pos, parser.buffer.length )
+          raise DateParseException, "error parsing date, general"
         end
       end
       
